@@ -1,0 +1,23 @@
+{
+  "title": "Pre-Assessment — Cyber for Beginners",
+  "questions": [
+    {
+      "id": "Q1",
+      "prompt": "Which CIA component is primarily impacted by a ransomware attack that encrypts shared files?",
+      "choices": ["Confidentiality", "Integrity", "Availability"],
+      "answer": "Availability"
+    },
+    {
+      "id": "Q2",
+      "prompt": "Which CIA component is primarily impacted when a document is altered without authorization?",
+      "choices": ["Confidentiality", "Integrity", "Availability"],
+      "answer": "Integrity"
+    },
+    {
+      "id": "Q3",
+      "prompt": "Which control best reduces account takeover risk from stolen passwords?",
+      "choices": ["Backups", "MFA", "RAID"],
+      "answer": "MFA"
+    }
+  ]
+}

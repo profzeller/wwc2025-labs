@@ -1,0 +1,23 @@
+{
+  "title": "Post-Assessment — Cyber for Beginners",
+  "questions": [
+    {
+      "id": "Q1",
+      "prompt": "A spreadsheet of student records is emailed to the wrong distribution list. What is the primary CIA impact?",
+      "choices": ["Confidentiality", "Integrity", "Availability"],
+      "answer": "Confidentiality"
+    },
+    {
+      "id": "Q2",
+      "prompt": "A lab VM image has been modified to include a backdoor. What is the primary CIA impact?",
+      "choices": ["Confidentiality", "Integrity", "Availability"],
+      "answer": "Integrity"
+    },
+    {
+      "id": "Q3",
+      "prompt": "Which practice is most directly tied to restoring availability after an incident?",
+      "choices": ["Backups and recovery testing", "Password rotation", "Firewall rule tuning"],
+      "answer": "Backups and recovery testing"
+    }
+  ]
+}

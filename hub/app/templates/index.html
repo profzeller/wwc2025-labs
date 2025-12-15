@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}WWC 2025 – Lab Hub{% endblock %}
+
+{% block header_title %}WWC 2025 – Lab Hub{% endblock %}
+
+{% block header_tagline %}
+This hub controls all hands-on labs for the Cyber for Beginners workshop.
+Start one lab at a time. Starting a new lab will automatically stop any others.
+{% endblock %}
+
+{% block content %}
+
+<div class="controls">
+  <form method="post" action="{{ url_for('hub.labs_stop') }}">
+    <button type="submit" class="btn-danger">Stop All Labs</button>
+  </form>
+
+  <a class="btn" href="{{ url_for('hub.labs_page') }}">View Lab Status / Details</a>
+  <a class="btn btn-primary" href="{{ url_for('hub.assessments_index') }}">Pre/Post Assessments</a>
+</div>
+
+<section class="grid">
+  {% for lab in labs %}
+    <div class="card">
+      <h2>{{ lab.title }}</h2>
+
+      {% if running_lab_id == lab.id %}
+        <p style="color: var(--success); font-weight: 600; font-size: 13px; margin-top: 2px;">
+          ● RUNNING
+        </p>
+      {% endif %}
+
+      <p>{{ lab.description }}</p>
+
+      <div class="card-actions">
+        <form method="post" action="{{ url_for('hub.labs_start', lab_id=lab.id) }}">
+          <button type="submit">Start Lab</button>
+        </form>
+
+        <a class="btn btn-primary"
+           href="{{ url_for('hub.labs_start_and_launch', lab_id=lab.id) }}">
+          Start &amp; Launch
+        </a>
+
+        <a class="link" href="{{ lab.launch_url }}" target="_blank" rel="noopener">
+          Launch ↗
+        </a>
+      </div>
+
+      <p style="margin-top: 6px; color: var(--muted); font-size: 13px;">
+        Lab ID: <code>{{ lab.id }}</code>
+      </p>
+    </div>
+  {% endfor %}
+</section>
+
+{% endblock %}

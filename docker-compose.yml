@@ -1,0 +1,22 @@
+services:
+  hub:
+    build: ./hub
+    container_name: wwc2025-hub
+    ports:
+      - "8080:5000"
+    volumes:
+      # Hub can start/stop containers
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Hub reads lab registry
+      - ./labs:/labs:ro
+    restart: unless-stopped
+
+  lab1:
+    build: ./labs/lab1-cia-matcher
+    image: wwc2025/lab1:latest
+    container_name: wwc2025-lab1
+    ports:
+      - "8081:5000"
+    # Do NOT auto-start. Hub will start/stop this.
+    profiles: ["labs"]
+    restart: "no"

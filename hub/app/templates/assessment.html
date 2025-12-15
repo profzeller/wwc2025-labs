@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}WWC 2025 – {{ assessment.title }}{% endblock %}
+
+{% block header_title %}{{ assessment.title }}{% endblock %}
+
+{% block header_tagline %}
+Answer each question, then submit to see your score and review corrections.
+{% endblock %}
+
+{% block content %}
+
+<div class="controls">
+  <a class="btn" href="{{ url_for('hub.assessments_index') }}">← Back to Assessments</a>
+</div>
+
+<form method="post" action="{{ url_for('hub.assessment_submit', name=name) }}">
+  {% for q in assessment.questions %}
+    <div class="card" style="margin-bottom: 16px;">
+      <h2 style="font-size: 16px;">{{ loop.index }}. {{ q.prompt }}</h2>
+
+      <div style="margin-top: 10px;">
+        {% for c in q.choices %}
+          <label style="display:block; margin: 8px 0; color: var(--text);">
+            <input type="radio" name="{{ q.id }}" value="{{ c }}" required />
+            <span style="margin-left: 8px;">{{ c }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="controls">
+    <button type="submit" class="btn-primary">Submit Assessment</button>
+  </div>
+</form>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}WWC 2025 – Labs{% endblock %}
+
+{% block header_title %}WWC 2025 – Labs{% endblock %}
+
+{% block header_tagline %}
+Detailed lab information. Use this view for troubleshooting ports, confirming which lab is running, and sharing launch links.
+{% endblock %}
+
+{% block content %}
+
+<div class="controls">
+  <a class="btn" href="{{ url_for('hub.index') }}">← Back to Lab Hub</a>
+
+  <form method="post" action="{{ url_for('hub.labs_stop') }}">
+    <button type="submit" class="btn-danger">Stop All Labs</button>
+  </form>
+</div>
+
+<section class="grid">
+  {% for lab in labs %}
+    <div class="card">
+      <h2>{{ lab.title }}</h2>
+
+      {% if running_lab_id == lab.id %}
+        <p style="color: var(--success); font-weight: 600; font-size: 13px; margin-top: 2px;">
+          ● RUNNING
+        </p>
+      {% endif %}
+
+      <p>{{ lab.description }}</p>
+
+      <p style="margin-top: 6px; color: var(--muted); font-size: 13px;">
+        Lab ID: <code>{{ lab.id }}</code><br/>
+        Container Name: <code>{{ lab.container_name }}</code>
+      </p>
+
+      <p style="margin-top: 6px; color: var(--muted); font-size: 13px;">
+        Launch: <a class="link" href="{{ lab.launch_url }}" target="_blank" rel="noopener">{{ lab.launch_url }}</a>
+      </p>
+
+      {% if lab.ports and lab.ports|length > 0 %}
+        <div style="margin-top: 6px; color: var(--muted); font-size: 13px;">
+          Ports:
+          <ul style="margin: 6px 0 0 18px; color: var(--muted);">
+            {% for p in lab.ports %}
+              <li><code>{{ p.host_port }}</code> → <code>{{ p.container_port }}</code></li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% else %}
+        <p style="margin-top: 6px; color: var(--muted); font-size: 13px;">
+          Ports: <code>(none defined)</code>
+        </p>
+      {% endif %}
+
+      {% if lab.volumes and lab.volumes|length > 0 %}
+        <div style="margin-top: 6px; color: var(--muted); font-size: 13px;">
+          Volumes:
+          <ul style="margin: 6px 0 0 18px; color: var(--muted);">
+            {% for v in lab.volumes %}
+              <li><code>{{ v.host_path }}</code> → <code>{{ v.container_path }}</code> (<code>{{ v.mode }}</code>)</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <div class="card-actions">
+        <form method="post" action="{{ url_for('hub.labs_start', lab_id=lab.id) }}">
+          <button type="submit">Start Lab</button>
+        </form>
+
+        <a class="btn btn-primary"
+           href="{{ url_for('hub.labs_start_and_launch', lab_id=lab.id) }}">
+          Start &amp; Launch
+        </a>
+
+        <a class="link" href="{{ lab.launch_url }}" target="_blank" rel="noopener">
+          Launch ↗
+        </a>
+      </div>
+    </div>
+  {% endfor %}
+</section>
+
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="controls">
+  <form method="post" action="/submit" style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+    <button type="submit" class="btn-primary">Submit Answers</button>
+    <a class="btn" href="/">Retake / Reset</a>
+
+    {% if score is not none %}
+      <div class="score">
+        <span>Score:</span>
+        <span class="badge {% if score == total %}success{% elif score == 0 %}danger{% endif %}">
+          {{ score }} / {{ total }}
+        </span>
+      </div>
+    {% endif %}
+  </form>
+</div>
+
+<form method="post" action="/submit">
+  <section class="grid">
+    {% for s in scenarios %}
+      {% set sid = s.id %}
+      {% set prev = None %}
+      {% if results %}
+        {% for r in results %}
+          {% if r.id == sid %}
+            {% set prev = r %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      <div class="card">
+        <h2>{{ loop.index }}. Scenario {{ s.id }}</h2>
+        <p class="prompt">{{ s.prompt }}</p>
+
+        <div class="choices">
+          {% for c in ["Confidentiality", "Integrity", "Availability"] %}
+            <label class="choice">
+              <input
+                type="radio"
+                name="{{ s.id }}"
+                value="{{ c }}"
+                {% if prev and prev.picked == c %}checked{% endif %}
+                required
+              />
+              <span>{{ c }}</span>
+            </label>
+          {% endfor %}
+        </div>
+
+        {% if prev %}
+          <div class="feedback">
+            {% if prev.ok %}
+              <div><span class="badge success">Correct</span></div>
+            {% else %}
+              <div><span class="badge danger">Incorrect</span></div>
+            {% endif %}
+
+            <div style="margin-top:10px;">
+              Your answer: <code>{{ prev.picked }}</code><br/>
+              Correct answer: <code>{{ prev.correct }}</code>
+            </div>
+
+            {% if prev.explanation %}
+              <div style="margin-top:10px;">
+                <strong>Explanation:</strong> {{ prev.explanation }}
+              </div>
+            {% endif %}
+
+            {% if prev.secondary and prev.secondary|length > 0 %}
+              <div style="margin-top:10px;">
+                <strong>Possible secondary impacts:</strong>
+                {% for sec in prev.secondary %}
+                  <code>{{ sec }}</code>{% if not loop.last %} {% endif %}
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+
+  <div class="controls">
+    <button type="submit" class="btn-primary">Submit Answers</button>
+    <a class="btn" href="/">Retake / Reset</a>
+  </div>
+</form>
+
+{% endblock %}

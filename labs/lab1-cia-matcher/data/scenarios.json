@@ -1,0 +1,75 @@
+{
+  "title": "Lab 1 — CIA Triad Scenario Matcher",
+  "scenarios": [
+    {
+      "id": "S01",
+      "prompt": "A teacher’s laptop containing unencrypted student grades is stolen from a vehicle.",
+      "primary": "Confidentiality",
+      "secondary": ["Availability"],
+      "explanation": "Sensitive student data may be exposed to unauthorized parties. If the only copy of grades was on the laptop, availability could also be impacted."
+    },
+    {
+      "id": "S02",
+      "prompt": "A ransomware attack encrypts a department file server and staff cannot access shared files for four days.",
+      "primary": "Availability",
+      "secondary": ["Integrity"],
+      "explanation": "Users cannot access resources when needed. Encryption and forced restoration can also create integrity concerns if data is altered or lost."
+    },
+    {
+      "id": "S03",
+      "prompt": "A shared lab manual is altered to include incorrect commands that break student environments.",
+      "primary": "Integrity",
+      "secondary": ["Availability"],
+      "explanation": "The content has been modified without authorization. The incorrect commands may also disrupt systems (availability)."
+    },
+    {
+      "id": "S04",
+      "prompt": "An HR spreadsheet containing salaries is accidentally emailed to the entire staff list.",
+      "primary": "Confidentiality",
+      "secondary": [],
+      "explanation": "Sensitive information is disclosed to unauthorized recipients."
+    },
+    {
+      "id": "S05",
+      "prompt": "A production website intermittently fails during peak hours due to resource exhaustion.",
+      "primary": "Availability",
+      "secondary": [],
+      "explanation": "Service disruptions prevent legitimate users from accessing the system."
+    },
+    {
+      "id": "S06",
+      "prompt": "A software update is applied, but the installation corrupts a database table and changes values unexpectedly.",
+      "primary": "Integrity",
+      "secondary": ["Availability"],
+      "explanation": "Data has been altered incorrectly. If the system must be taken offline to repair data, availability can also be affected."
+    },
+    {
+      "id": "S07",
+      "prompt": "A cloud storage bucket is misconfigured and becomes publicly accessible on the internet.",
+      "primary": "Confidentiality",
+      "secondary": [],
+      "explanation": "Unauthorized access to stored data becomes possible due to access control failure."
+    },
+    {
+      "id": "S08",
+      "prompt": "A student account is compromised and used to submit altered assignments under another student’s name.",
+      "primary": "Integrity",
+      "secondary": ["Confidentiality"],
+      "explanation": "The authenticity of submissions is compromised. If private student data is accessed, confidentiality may also be impacted."
+    },
+    {
+      "id": "S09",
+      "prompt": "A campus Wi-Fi outage occurs during an online exam window, preventing students from logging in.",
+      "primary": "Availability",
+      "secondary": [],
+      "explanation": "Users cannot access the network service when required."
+    },
+    {
+      "id": "S10",
+      "prompt": "A database backup job runs nightly, but no one tests restores; later, recovery fails because backups are incomplete.",
+      "primary": "Availability",
+      "secondary": ["Integrity"],
+      "explanation": "The ability to restore systems and data is unavailable when needed. Incomplete backups also raise integrity concerns about the recoverability of correct data."
+    }
+  ]
+}

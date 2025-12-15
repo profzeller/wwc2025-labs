@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}WWC 2025 – Results{% endblock %}
+
+{% block header_title %}Results{% endblock %}
+
+{% block header_tagline %}
+{{ title }} — Score: {{ score }} / {{ total }}
+{% endblock %}
+
+{% block content %}
+
+<div class="controls">
+  <a class="btn" href="{{ url_for('hub.assessments_index') }}">← Back to Assessments</a>
+  <a class="btn" href="{{ url_for('hub.assessment', name=name) }}">Retake</a>
+</div>
+
+<div class="card" style="margin-bottom: 16px;">
+  <h2>Your Score</h2>
+  <p style="font-size: 16px; color: var(--text);">
+    <strong>{{ score }}</strong> / <strong>{{ total }}</strong>
+  </p>
+</div>
+
+<section>
+  {% for r in results %}
+    <div class="card" style="margin-bottom: 16px;">
+      <h2 style="font-size: 16px;">{{ loop.index }}. {{ r.prompt }}</h2>
+
+      {% if r.ok %}
+        <p style="color: var(--success); font-weight: 600;">Correct</p>
+      {% else %}
+        <p style="color: var(--danger); font-weight: 600;">Incorrect</p>
+      {% endif %}
+
+      <p style="color: var(--muted);">
+        Your answer: <code>{{ r.picked }}</code><br/>
+        Correct answer: <code>{{ r.correct }}</code>
+      </p>
+    </div>
+  {% endfor %}
+</section>
+
+{% endblock %}

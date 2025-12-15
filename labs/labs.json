@@ -1,0 +1,15 @@
+{
+  "labs": [
+    {
+      "id": "lab1",
+      "title": "Lab 1 — CIA Triad Scenario Matcher",
+      "description": "Match real-world scenarios to the primary CIA Triad component impacted. Designed to reinforce reasoning and classification before introducing security tools.",
+      "container_name": "wwc2025-lab1",
+      "image": "wwc2025/lab1:latest",
+      "ports": [
+        { "container_port": 5000, "host_port": 8081 }
+      ],
+      "launch_url": "http://localhost:8081/"
+    }
+  ]
+}
