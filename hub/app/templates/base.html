@@ -91,6 +91,11 @@
 
     button:hover, .btn:hover { border-color: var(--accent); }
 
+    button:disabled, .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
     .btn-danger, button.btn-danger { border-color: var(--danger); color: var(--danger); }
     .btn-primary, button.btn-primary { border-color: var(--accent); color: var(--accent); }
 
@@ -238,8 +243,6 @@
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    .muted { color: var(--muted); }
   </style>
 
   {% block head %}{% endblock %}
@@ -289,7 +292,7 @@
         <span id="modalTitleSpinner" class="spinner spinner-lg" style="display:none;"></span>
         <span id="modalTitleText">Working…</span>
       </h3>
-      <button id="modalCloseBtn" class="btn" type="button">Close</button>
+      <button id="modalCloseBtn" class="btn" type="button" disabled>Close</button>
     </div>
     <div class="modal-body">
       <ul id="modalSteps" class="steps"></ul>
@@ -298,9 +301,6 @@
       <a id="modalLaunchLink" class="btn btn-primary" href="#" target="_blank" rel="noopener" style="display:none;">
         Launch
       </a>
-      <button id="modalDoneBtn" class="btn btn-primary" type="button" style="display:none;">
-        Done
-      </button>
     </div>
   </div>
 </div>
@@ -312,7 +312,6 @@
     const titleSpinnerEl = document.getElementById("modalTitleSpinner");
     const stepsEl = document.getElementById("modalSteps");
     const closeBtn = document.getElementById("modalCloseBtn");
-    const doneBtn = document.getElementById("modalDoneBtn");
     const launchLink = document.getElementById("modalLaunchLink");
 
     let es = null;
@@ -322,23 +321,26 @@
     function showModal(title) {
       titleTextEl.textContent = title || "Working…";
       stepsEl.innerHTML = "";
-      doneBtn.style.display = "none";
       launchLink.style.display = "none";
       launchLink.href = "#";
 
       inProgress = true;
+      closeBtn.disabled = true;
+      closeBtn.textContent = "Close";
       titleSpinnerEl.style.display = "inline-block";
 
       backdrop.style.display = "flex";
       backdrop.setAttribute("aria-hidden", "false");
 
-      // Add a single “working” row that we remove as soon as the first real step arrives.
+      // Single placeholder that gets removed when first real step arrives
       addStep("Working…", "spin", true);
     }
 
     function setDoneState() {
       inProgress = false;
       titleSpinnerEl.style.display = "none";
+      closeBtn.disabled = false;
+      closeBtn.textContent = "Close";
     }
 
     function hideModal() {
@@ -349,6 +351,7 @@
       autoLaunch = false;
       inProgress = false;
       titleSpinnerEl.style.display = "none";
+      closeBtn.disabled = true;
       backdrop.style.display = "none";
       backdrop.setAttribute("aria-hidden", "true");
     }
@@ -399,7 +402,6 @@
 
     function runSSE(url, opts) {
       autoLaunch = !!(opts && opts.autoLaunch);
-
       es = new EventSource(url);
 
       es.onmessage = (evt) => {
@@ -416,7 +418,6 @@
           removePlaceholderIfPresent();
           addStep(data.message, "err");
           setDoneState();
-          doneBtn.style.display = "inline-block";
           if (es) { es.close(); es = null; }
           return;
         }
@@ -432,11 +433,9 @@
           }
 
           setDoneState();
-          doneBtn.style.display = "inline-block";
-
           if (es) { es.close(); es = null; }
 
-          // Auto-launch only after the backend has reported readiness via 'done'
+          // Auto-launch only after backend readiness via 'done'
           if (autoLaunch && finalLaunchUrl) {
             window.open(finalLaunchUrl, "_blank", "noopener");
           }
@@ -448,7 +447,6 @@
         removePlaceholderIfPresent();
         addStep("Connection error while streaming progress. Check the hub logs.", "err");
         setDoneState();
-        doneBtn.style.display = "inline-block";
         if (es) { es.close(); es = null; }
       };
     }
@@ -464,26 +462,26 @@
       }
     };
 
-    // Prevent closing while running (optional UX guard)
     closeBtn.addEventListener("click", () => {
       if (inProgress) return;
       hideModal();
-    });
-
-    doneBtn.addEventListener("click", () => {
-      hideModal();
+      // Refresh so RUNNING indicator updates without forcing the user to click elsewhere
       window.location.reload();
     });
 
     backdrop.addEventListener("click", (e) => {
       if (inProgress) return;
-      if (e.target === backdrop) hideModal();
+      if (e.target === backdrop) {
+        hideModal();
+        window.location.reload();
+      }
     });
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && backdrop.style.display === "flex") {
         if (inProgress) return;
         hideModal();
+        window.location.reload();
       }
     });
   })();

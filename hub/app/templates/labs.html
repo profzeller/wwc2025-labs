@@ -13,6 +13,10 @@ Detailed lab information. Use this view for troubleshooting ports, confirming wh
 <div class="controls">
   <a class="btn" href="{{ url_for('hub.index') }}">← Back to Lab Hub</a>
 
+  <button type="button" class="btn" onclick="WWCHubUI.closePage()">
+    Close Page
+  </button>
+
   <button type="button" class="btn-danger" onclick="WWCHub.stopAllLabs()">
     Stop All Labs
   </button>
@@ -69,5 +73,26 @@ Detailed lab information. Use this view for troubleshooting ports, confirming wh
     </div>
   {% endfor %}
 </section>
+
+<script>
+  // Close Page: browsers only allow window.close() reliably if the window was opened by script.
+  // If not closable, we fall back to navigating back to the hub.
+  window.WWCHubUI = {
+    closePage: function () {
+      try {
+        window.close();
+      } catch (e) {
+        // ignore
+      }
+
+      // If still open after a tick, redirect.
+      setTimeout(function () {
+        if (!window.closed) {
+          window.location.href = "{{ url_for('hub.index') }}";
+        }
+      }, 50);
+    }
+  };
+</script>
 
 {% endblock %}
