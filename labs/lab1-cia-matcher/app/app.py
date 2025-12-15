@@ -6,7 +6,7 @@ from typing import Any
 
 from flask import Flask, render_template, request
 
-# Primary expected location
+# Primary expected location (baked into the image)
 DATA_PATH = Path("/app/data/scenarios.json")
 
 
@@ -16,20 +16,12 @@ def load_scenarios() -> list[dict[str, Any]]:
 
     Expected file path inside container:
       /app/data/scenarios.json
-
-    Expected JSON format:
-    {
-      "title": "...",
-      "scenarios": [
-        {"id":"S01","prompt":"...","primary":"Confidentiality","explanation":"..."}
-      ]
-    }
     """
     if not DATA_PATH.exists():
         raise FileNotFoundError(
             f"Missing scenarios file at {DATA_PATH}. "
             f"Ensure labs/lab1-cia-matcher/data/scenarios.json exists in the repo and "
-            f"the lab image was rebuilt after updating the Dockerfile."
+            f"the lab image was rebuilt."
         )
 
     with open(DATA_PATH, "r", encoding="utf-8") as f:

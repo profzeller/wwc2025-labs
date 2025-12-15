@@ -2,10 +2,14 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY hub/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app ./app
+# Hub application code
+COPY hub/app ./app
+
+# Bake the lab registry into the hub image (no host bind-mounts for config)
+COPY labs/labs.json ./labs/labs.json
 
 ENV FLASK_RUN_HOST=0.0.0.0
 ENV FLASK_RUN_PORT=5000
