@@ -1,20 +1,15 @@
 {% extends "base.html" %}
 
 {% block title %}WWC 2025 – Lab Hub{% endblock %}
-
 {% block header_title %}WWC 2025 – Lab Hub{% endblock %}
-
-{% block header_tagline %}
-This hub controls all hands-on labs for the Cyber for Beginners workshop.
-Start one lab at a time. Starting a new lab will automatically stop any others.
-{% endblock %}
+{% block header_tagline %}Start labs for the Cyber for Beginners workshop. Use “Start & Launch” during instruction.{% endblock %}
 
 {% block content %}
 
 <div class="controls">
-  <form method="post" action="{{ url_for('hub.labs_stop') }}">
-    <button type="submit" class="btn-danger">Stop All Labs</button>
-  </form>
+  <button type="button" class="btn-danger" onclick="stopAllLabsWithModal()">
+    Stop All Labs
+  </button>
 
   <a class="btn" href="{{ url_for('hub.labs_page') }}">View Lab Status / Details</a>
   <a class="btn btn-primary" href="{{ url_for('hub.assessments_index') }}">Pre/Post Assessments</a>
@@ -26,7 +21,7 @@ Start one lab at a time. Starting a new lab will automatically stop any others.
       <h2>{{ lab.title }}</h2>
 
       {% if running_lab_id == lab.id %}
-        <p style="color: var(--success); font-weight: 600; font-size: 13px; margin-top: 2px;">
+        <p style="color: var(--success); font-weight: 700; font-size: 13px; margin-top: 2px;">
           ● RUNNING
         </p>
       {% endif %}
@@ -34,14 +29,11 @@ Start one lab at a time. Starting a new lab will automatically stop any others.
       <p>{{ lab.description }}</p>
 
       <div class="card-actions">
-        <form method="post" action="{{ url_for('hub.labs_start', lab_id=lab.id) }}">
-          <button type="submit">Start Lab</button>
-        </form>
-
-        <a class="btn btn-primary"
-           href="{{ url_for('hub.labs_start_and_launch', lab_id=lab.id) }}">
+        <button type="button"
+                class="btn-primary"
+                onclick="startLabWithModal('{{ lab.id }}', '{{ lab.launch_url }}', true)">
           Start &amp; Launch
-        </a>
+        </button>
 
         <a class="link" href="{{ lab.launch_url }}" target="_blank" rel="noopener">
           Launch ↗

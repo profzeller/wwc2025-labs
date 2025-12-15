@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 import docker
 from docker.errors import NotFound
@@ -42,7 +42,6 @@ def load_labs() -> list[LabSpec]:
             LabPort(container_port=p["container_port"], host_port=p["host_port"])
             for p in lab.get("ports", [])
         ]
-
         labs.append(
             LabSpec(
                 id=lab["id"],
@@ -54,17 +53,18 @@ def load_labs() -> list[LabSpec]:
                 launch_url=lab["launch_url"],
             )
         )
-
     return labs
 
 
-def stop_all_labs(labs: list[LabSpec]) -> None:
+def stop_all_labs(labs: list[LabSpec], step: Optional[Callable[[str], None]] = None) -> None:
     client = docker_client()
     for lab in labs:
         try:
             c = client.containers.get(lab.container_name)
             if c.status == "running":
-                c.stop(timeout=5)
+                if step:
+                    step(f"Stopping {lab.container_name}…")
+                c.stop(timeout=10)
         except NotFound:
             pass
 
@@ -82,7 +82,7 @@ def get_running_lab_id() -> Optional[str]:
     return None
 
 
-def start_lab(lab_id: str) -> LabSpec:
+def start_lab(lab_id: str, step: Optional[Callable[[str], None]] = None) -> LabSpec:
     labs = load_labs()
     lab = next((l for l in labs if l.id == lab_id), None)
     if not lab:
@@ -90,26 +90,38 @@ def start_lab(lab_id: str) -> LabSpec:
 
     client = docker_client()
 
-    # Stop any other lab first
-    stop_all_labs(labs)
+    if step:
+        step("Stopping any running labs…")
+    stop_all_labs(labs, step=step)
 
-    # Ensure image exists locally
+    if step:
+        step("Ensuring lab image is available…")
     try:
         client.images.get(lab.image)
     except Exception:
         raise ValueError(
             f"Lab image not found locally: {lab.image}. "
-            f"Run: docker compose --profile labs up -d --build (or docker compose build)"
+            f"Run: docker compose build (or docker compose --profile labs up -d --build)"
         )
 
-    # Remove existing stopped container for clean restarts
+    # Clean restart if container exists but isn't running
+    if step:
+        step("Preparing container…")
     try:
         existing = client.containers.get(lab.container_name)
-        if existing.status != "running":
-            existing.remove(force=True)
+        if existing.status == "running":
+            # should not happen because we stop first, but keep safe
+            if step:
+                step("Stopping existing container…")
+            existing.stop(timeout=10)
+        if step:
+            step("Removing old container…")
+        existing.remove(force=True)
     except NotFound:
         pass
 
+    if step:
+        step("Starting container…")
     port_map = {f"{p.container_port}/tcp": p.host_port for p in lab.ports}
 
     client.containers.run(
@@ -119,5 +131,8 @@ def start_lab(lab_id: str) -> LabSpec:
         ports=port_map,
         restart_policy={"Name": "no"},
     )
+
+    if step:
+        step("Container started. Waiting for readiness…")
 
     return lab

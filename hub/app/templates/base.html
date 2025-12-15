@@ -16,159 +16,45 @@
       --danger: #f87171;
       --success: #4ade80;
     }
-
     * { box-sizing: border-box; }
+    body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
+    header { padding:20px 24px; border-bottom:1px solid var(--border); background:rgba(11,15,20,0.9); }
+    header h1 { margin:0; font-size:22px; }
+    header .tagline { margin:8px 0 0 0; color:var(--muted); max-width:980px; line-height:1.4; }
+    main { padding:24px; max-width:1100px; margin:0 auto; }
 
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-    }
+    .flash { margin-bottom:18px; padding:12px 14px; border-radius:10px; border:1px solid var(--border); background:var(--panel); }
+    .flash.success { border-color:var(--success); color:var(--success); }
+    .flash.error { border-color:var(--danger); color:var(--danger); }
 
-    header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(11,15,20,0.9);
-    }
+    .controls { margin-bottom:24px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
 
-    header .title {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    button, .btn { background:var(--panel); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:10px 16px; font-size:14px; cursor:pointer; text-decoration:none; display:inline-block; line-height:1; }
+    button:hover, .btn:hover { border-color:var(--accent); }
+    .btn-danger, button.btn-danger { border-color:var(--danger); color:var(--danger); }
+    .btn-primary, button.btn-primary { border-color:var(--accent); color:var(--accent); }
 
-    header h1 {
-      margin: 0;
-      font-size: 22px;
-    }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:18px; }
+    .card { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px; display:flex; flex-direction:column; gap:12px; }
+    .card h2 { margin:0; font-size:18px; }
+    .card p { margin:0; color:var(--muted); line-height:1.4; }
+    .card-actions { margin-top:auto; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    a.link { color:var(--accent); font-size:14px; text-decoration:none; }
+    a.link:hover { text-decoration:underline; }
 
-    header .tagline {
-      margin: 8px 0 0 0;
-      color: var(--muted);
-      max-width: 980px;
-      line-height: 1.4;
-    }
+    footer { margin-top:36px; padding-top:16px; border-top:1px solid var(--border); color:var(--muted); font-size:13px; }
+    code { background:rgba(154,164,178,0.12); padding:2px 6px; border-radius:6px; }
 
-    main {
-      padding: 24px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    /* Flash messages */
-    .flash {
-      margin-bottom: 18px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-    }
-
-    .flash.success {
-      border-color: var(--success);
-      color: var(--success);
-    }
-
-    .flash.error {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    /* Buttons / controls */
-    .controls {
-      margin-bottom: 24px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    button, .btn {
-      background: var(--panel);
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
-      line-height: 1;
-    }
-
-    button:hover, .btn:hover {
-      border-color: var(--accent);
-    }
-
-    .btn-danger, button.btn-danger {
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    .btn-primary, button.btn-primary {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* Cards */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 18px;
-    }
-
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card h2 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.4;
-    }
-
-    .card-actions {
-      margin-top: auto;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    a.link {
-      color: var(--accent);
-      font-size: 14px;
-      text-decoration: none;
-    }
-
-    a.link:hover { text-decoration: underline; }
-
-    footer {
-      margin-top: 36px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    code {
-      background: rgba(154,164,178,0.12);
-      padding: 2px 6px;
-      border-radius: 6px;
-    }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
+    .modal { width:100%; max-width:560px; background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:0 18px 60px rgba(0,0,0,0.45); }
+    .modal h3 { margin:0 0 8px 0; font-size:18px; }
+    .modal p { margin:0 0 10px 0; color:var(--muted); line-height:1.4; }
+    .status-line { display:flex; gap:10px; align-items:center; margin:12px 0 4px 0; color:var(--text); }
+    .spinner { width:22px; height:22px; border:3px solid rgba(138,180,248,0.25); border-top-color:var(--accent); border-radius:50%; animation:spin 0.9s linear infinite; display:inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .status-ok { color:var(--success); font-weight:700; }
+    .status-bad { color:var(--danger); font-weight:700; }
+    .modal-actions { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:12px; }
   </style>
 
   {% block head %}{% endblock %}
@@ -177,26 +63,16 @@
 <body>
 
 <header>
-  <div class="title">
-    <h1>{% block header_title %}WWC 2025 – Lab Hub{% endblock %}</h1>
-  </div>
-
-  <p class="tagline">
-    {% block header_tagline %}
-      Start one lab at a time. Starting a new lab automatically stops any other running labs.
-    {% endblock %}
-  </p>
+  <h1>{% block header_title %}WWC 2025 – Lab Hub{% endblock %}</h1>
+  <p class="tagline">{% block header_tagline %}Start one lab at a time.{% endblock %}</p>
 </header>
 
 <main>
 
-  <!-- Flash messages (shared) -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, message in messages %}
-        <div class="flash {{ category }}">
-          {{ message }}
-        </div>
+        <div class="flash {{ category }}">{{ message }}</div>
       {% endfor %}
     {% endif %}
   {% endwith %}
@@ -205,11 +81,186 @@
 
   <footer>
     {% block footer %}
-      Tip: Keep this hub open while teaching. Click <code>Start Lab</code>, then open <code>Launch Lab</code> in a new tab.
+      Tip: Use <code>Start &amp; Launch</code> during instruction. Use <code>Stop All Labs</code> before switching topics.
     {% endblock %}
   </footer>
 
 </main>
+
+<div id="modalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <h3 id="modalTitle">Working…</h3>
+    <p id="modalText">Please wait.</p>
+
+    <div class="status-line">
+      <span id="modalIcon" class="spinner"></span>
+      <span id="modalStep">Queued…</span>
+    </div>
+
+    <div class="modal-actions">
+      <a id="modalLaunchBtn" class="btn btn-primary" href="#" target="_blank" rel="noopener" style="display:none;">
+        Launch Lab ↗
+      </a>
+      <button id="modalCloseBtn" class="btn" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const overlay = document.getElementById("modalOverlay");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalText = document.getElementById("modalText");
+  const modalIcon = document.getElementById("modalIcon");
+  const modalStep = document.getElementById("modalStep");
+  const launchBtn = document.getElementById("modalLaunchBtn");
+  const closeBtn = document.getElementById("modalCloseBtn");
+
+  function openModal(title, text) {
+    modalTitle.textContent = title;
+    modalText.textContent = text;
+    modalIcon.className = "spinner";
+    modalIcon.textContent = "";
+    modalStep.textContent = "Queued…";
+    launchBtn.style.display = "none";
+    launchBtn.href = "#";
+    overlay.style.display = "flex";
+    overlay.setAttribute("aria-hidden", "false");
+  }
+
+  function setError(message) {
+    modalIcon.className = "status-bad";
+    modalIcon.textContent = "✖";
+    modalStep.innerHTML = `<span class="status-bad">Error:</span> ${escapeHtml(message)}`;
+  }
+
+  function setOk(message) {
+    modalIcon.className = "status-ok";
+    modalIcon.textContent = "✔";
+    modalStep.innerHTML = `<span class="status-ok">${escapeHtml(message)}</span>`;
+  }
+
+  function setRunning(launchUrl) {
+    modalIcon.className = "status-ok";
+    modalIcon.textContent = "✔";
+    modalStep.innerHTML = `<span class="status-ok">Running</span>`;
+    launchBtn.href = launchUrl;
+    launchBtn.style.display = "inline-block";
+  }
+
+  function closeModal() {
+    overlay.style.display = "none";
+    overlay.setAttribute("aria-hidden", "true");
+  }
+
+  closeBtn.addEventListener("click", closeModal);
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  async function pollUntil(predicateFn, onTickFn, timeoutMs=60_000, intervalMs=650) {
+    const startTime = Date.now();
+    while (Date.now() - startTime < timeoutMs) {
+      const sResp = await fetch("/api/labs/status");
+      const sData = await sResp.json();
+      if (onTickFn) onTickFn(sData);
+      if (predicateFn(sData)) return sData;
+      await new Promise(r => setTimeout(r, intervalMs));
+    }
+    throw new Error("Timed out waiting for completion.");
+  }
+
+  async function startLabWithModal(labId, launchUrl, autoLaunch) {
+    openModal("Starting lab…", "Please wait while the lab environment starts.");
+
+    try {
+      const resp = await fetch(`/api/labs/start/${encodeURIComponent(labId)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+      const data = await resp.json();
+      if (!data.ok) {
+        setError("Failed to submit start request.");
+        return;
+      }
+
+      await pollUntil(
+        (sData) => sData.running_lab_id === labId || ((sData.jobs || {})[labId] && (sData.jobs[labId].state === "error")),
+        (sData) => {
+          const job = (sData.jobs || {})[labId];
+          if (job && job.state === "starting" && job.message) {
+            modalStep.textContent = job.message;
+          }
+          if (job && job.state === "error") {
+            setError(job.message || "Unknown error");
+          }
+        },
+        90_000,
+        650
+      );
+
+      // If we got here and it's running, show launch
+      setRunning(launchUrl);
+      if (autoLaunch) {
+        window.open(launchUrl, "_blank", "noopener");
+      }
+    } catch (e) {
+      setError(e?.message || "Unexpected error");
+    }
+  }
+
+  async function stopAllLabsWithModal() {
+    openModal("Stopping labs…", "Please wait while all lab containers stop.");
+
+    try {
+      const resp = await fetch(`/api/labs/stop`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: "{}"
+      });
+      const data = await resp.json();
+      if (!data.ok) {
+        setError("Failed to submit stop request.");
+        return;
+      }
+
+      await pollUntil(
+        (sData) => {
+          const sj = sData.stop_job;
+          return (sj && (sj.state === "stopped" || sj.state === "error"));
+        },
+        (sData) => {
+          const sj = sData.stop_job;
+          if (sj && sj.state === "stopping" && sj.message) {
+            modalStep.textContent = sj.message;
+          }
+          if (sj && sj.state === "error") {
+            setError(sj.message || "Unknown error");
+          }
+          if (sj && sj.state === "stopped") {
+            setOk("All labs stopped.");
+          }
+        },
+        60_000,
+        650
+      );
+
+      // Ensure UI reflects no running lab
+      setOk("All labs stopped.");
+    } catch (e) {
+      setError(e?.message || "Unexpected error");
+    }
+  }
+
+  window.startLabWithModal = startLabWithModal;
+  window.stopAllLabsWithModal = stopAllLabsWithModal;
+</script>
 
 </body>
 </html>
