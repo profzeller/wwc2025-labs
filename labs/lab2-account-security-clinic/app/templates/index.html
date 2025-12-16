@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block subtitle %}
+<p class="sub">
+  Work through any 2–3 modules. Each module includes a short interactive element and classroom-ready discussion prompts.
+</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="panel">
+  <div class="row" style="justify-content: space-between;">
+    <div class="pill">Estimated time: 12–20 minutes</div>
+    <div class="pill">Recommended format: pairs / small groups</div>
+  </div>
+
+  <div style="margin-top: 10px; color: var(--muted); line-height: 1.5;">
+    Choose a module below. There are no “gotcha” questions—this clinic is about practical tradeoffs, policy choices, and teaching moments.
+  </div>
+</div>
+
+<div style="height: 14px;"></div>
+
+<section class="grid">
+  {% for m in modules %}
+  <div class="card">
+    <h2>{{ m.title }}</h2>
+    <div class="pill">Time: {{ m.minutes }}</div>
+    <p>{{ m.summary }}</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/module/{{ m.key }}">Open Module</a>
+    </div>
+  </div>
+  {% endfor %}
+</section>
+
+<div style="height: 16px;"></div>
+
+<div class="callout warn">
+  <strong>Discussion prompt:</strong>
+  In your environment, which of these is hardest to implement and why: strong passwords, MFA, recovery readiness, or phishing-resistant auth?
+</div>
+
+{% endblock %}

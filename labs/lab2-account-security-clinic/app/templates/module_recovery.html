@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block subtitle %}
+<p class="sub">
+  Recovery is part of hygiene. If a device is lost, a teacher changes phones, or a student forgets a password—what happens next?
+</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="two">
+  <div class="panel">
+    <h2 style="margin-top:0;">Recovery Codes Example</h2>
+    <p style="color: var(--muted); line-height: 1.5;">
+      Many providers issue one-time recovery codes. These are powerful—treat them like passwords.
+      Discuss how you would store these safely in your environment.
+    </p>
+
+    <div class="codebox">
+      {% for c in codes %}
+        {{ c }}{% if not loop.last %}<br/>{% endif %}
+      {% endfor %}
+    </div>
+
+    <div style="height: 12px;"></div>
+
+    <div class="callout warn">
+      <strong>Prompt:</strong> Where do people actually store recovery codes (photos, notes, paper)?
+      Which choices are acceptable, and under what conditions?
+    </div>
+
+    <div style="height: 12px;"></div>
+
+    <div class="row">
+      <a class="btn btn-primary" href="/module/recovery">Generate new example</a>
+      <a class="btn" href="/">Home</a>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;">Resilience checklist</h2>
+
+    <div class="callout good">
+      <strong>Minimum viable:</strong>
+      A known recovery email/phone, device lock enabled, and a documented reset process (who verifies identity, how fast, and what evidence is required).
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="callout">
+      <strong>Better:</strong>
+      Password manager adoption + recovery codes stored inside it, plus documented steps for lost phones and staff turnover.
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="callout warn">
+      <strong>Common failure mode:</strong>
+      MFA is enabled but no one knows the recovery plan. The first lost phone becomes a major incident.
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="codebox">
+      Discussion activity:
+      - Define who can initiate a reset
+      - Define how identity is verified
+      - Define how long it should take
+      - Decide what gets logged (audit trail)
+    </div>
+  </div>
+</div>
+
+{% endblock %}

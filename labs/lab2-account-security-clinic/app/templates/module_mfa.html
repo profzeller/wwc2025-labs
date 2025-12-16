@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block subtitle %}
+<p class="sub">
+  This simulator shows how push fatigue happens and how to teach safer MFA patterns.
+</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="two">
+  <div class="panel">
+    <h2 style="margin-top:0;">Push-Fatigue Simulator</h2>
+    <p style="color: var(--muted); line-height: 1.5;">
+      Scenario: A user receives repeated MFA prompts they did not initiate. Attackers often rely on “approve to make it stop.”
+      Use the buttons below to simulate a safe response.
+    </p>
+
+    <div class="callout bad">
+      <strong>Rule:</strong> If you did not initiate the login, do not approve.
+    </div>
+
+    <div style="height: 12px;"></div>
+
+    <div class="panel" style="background: rgba(154,164,178,.06);">
+      <div class="row" style="justify-content: space-between; align-items:center;">
+        <div>
+          <div style="font-weight:600;">MFA Prompt</div>
+          <div style="color:var(--muted); font-size:13px;">“Approve sign-in to ExampleMail?”</div>
+        </div>
+        <div class="pill"><span id="attempts">0</span> prompts received</div>
+      </div>
+
+      <div style="height: 10px;"></div>
+
+      <div class="row">
+        <button class="btn btn-primary" type="button" onclick="approve()">Approve</button>
+        <button class="btn btn-danger" type="button" onclick="deny()">Deny</button>
+        <button class="btn" type="button" onclick="report()">Report / Reset Password</button>
+        <button class="btn" type="button" onclick="resetSim()">Reset</button>
+      </div>
+
+      <div style="height: 12px;"></div>
+      <div id="status" class="callout" style="margin:0;">
+        Click a response to see the outcome.
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;">Teaching prompts</h2>
+
+    <div class="callout warn">
+      <strong>Prompt 1:</strong> Why do push prompts fail? (interruptions, pressure, habituation, social engineering)
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="callout good">
+      <strong>Prompt 2:</strong> Which MFA methods reduce phishing risk? (number-matching, device-bound, passkeys, security keys)
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="callout">
+      <strong>Prompt 3:</strong> What should students do immediately after receiving an unexpected prompt?
+      Write a 3-step response that is easy to remember.
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="codebox">
+      Sample 3-step response:
+      1) Deny the prompt
+      2) Change password from a known-safe device
+      3) Report to help desk / teacher (verify account activity)
+    </div>
+  </div>
+</div>
+
+<script>
+  let count = 0;
+  let compromised = false;
+
+  function bump() {
+    count += 1;
+    document.getElementById("attempts").textContent = String(count);
+  }
+
+  function setStatus(kind, title, msg) {
+    const el = document.getElementById("status");
+    el.className = "callout " + (kind || "");
+    el.innerHTML = "<strong>" + title + "</strong><div style='margin-top:6px; color: var(--muted); line-height:1.5;'>" + msg + "</div>";
+  }
+
+  function approve() {
+    bump();
+    if (!compromised) {
+      compromised = true;
+      setStatus(
+        "bad",
+        "Outcome: Account likely compromised",
+        "Approving an unrecognized prompt can grant the attacker access. Next actions: reset credentials, revoke sessions, and investigate."
+      );
+    } else {
+      setStatus(
+        "bad",
+        "Outcome: Continued exposure",
+        "Multiple approvals worsen the incident. Teach users: never approve something you didn't start."
+      );
+    }
+  }
+
+  function deny() {
+    bump();
+    if (!compromised) {
+      setStatus(
+        "good",
+        "Outcome: Correct immediate action",
+        "Denying stops that attempt. Next: change password and review recent sign-in activity."
+      );
+    } else {
+      setStatus(
+        "warn",
+        "Outcome: Deny helps, but follow-up is required",
+        "If compromise already happened, denial alone isn't enough. Reset password, revoke sessions, and check email/forwarding rules."
+      );
+    }
+  }
+
+  function report() {
+    bump();
+    setStatus(
+      "good",
+      "Outcome: Best practice follow-up",
+      "Report and reset reduce risk. In institutions: verify identity, rotate credentials, and document the event for trend tracking."
+    );
+  }
+
+  function resetSim() {
+    count = 0;
+    compromised = false;
+    document.getElementById("attempts").textContent = "0";
+    const el = document.getElementById("status");
+    el.className = "callout";
+    el.textContent = "Click a response to see the outcome.";
+  }
+</script>
+
+{% endblock %}

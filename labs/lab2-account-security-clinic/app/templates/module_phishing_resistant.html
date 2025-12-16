@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block subtitle %}
+<p class="sub">
+  Not all MFA is equal. This module frames phishing-resistant authentication in practical terms for schools.
+</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="two">
+  <div class="panel">
+    <h2 style="margin-top:0;">What “phishing-resistant” means</h2>
+    <p style="color: var(--muted); line-height: 1.5;">
+      A method is phishing-resistant when it is difficult to trick a user into authenticating to a fake site and handing an attacker reusable secrets.
+      Examples include security keys and passkeys (WebAuthn).
+    </p>
+
+    <div class="callout good">
+      <strong>High-level takeaway:</strong>
+      Prefer authentication that is bound to the legitimate site and device, not just “a code the user can type anywhere.”
+    </div>
+
+    <div style="height: 12px;"></div>
+
+    <div class="panel" style="background: rgba(154,164,178,.06);">
+      <h3 style="margin:0 0 10px 0; font-size:15px;">Compare common methods</h3>
+
+      <div class="codebox">
+        SMS codes:            easy to deploy, higher risk (SIM swap, phishing)<br/>
+        Authenticator OTP:    better than SMS, still phishable if user types into fake site<br/>
+        Push approve/deny:    user-friendly, vulnerable to push fatigue and social engineering<br/>
+        Number matching:      improved push; reduces blind approval<br/>
+        Passkeys/WebAuthn:    phishing-resistant; device-bound; improving usability<br/>
+        Security keys:        strong phishing resistance; great for admins/high-risk roles
+      </div>
+    </div>
+
+    <div style="height: 12px;"></div>
+
+    <div class="row">
+      <button class="btn btn-primary" type="button" onclick="toggleDetails()">Show rollout tips</button>
+      <a class="btn" href="/">Home</a>
+    </div>
+
+    <div id="details" style="display:none; margin-top: 12px;">
+      <div class="callout">
+        <strong>Rollout tips (schools):</strong>
+        <div style="margin-top:8px; color: var(--muted); line-height:1.5;">
+          1) Start with staff/admin accounts and high-impact systems (email, SIS, Google/M365 admin).<br/>
+          2) Use passkeys where possible; keep a safe recovery process.<br/>
+          3) Teach “never type codes into links from messages” and promote bookmarked sign-in URLs.<br/>
+          4) For shared labs: avoid shared accounts; use role-based access and auditing.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0;">Teaching prompts</h2>
+
+    <div class="callout warn">
+      <strong>Prompt 1:</strong> What’s the biggest barrier to passkeys/security keys in your environment: cost, device compatibility, training, or support?
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="callout">
+      <strong>Prompt 2:</strong> Which accounts should get the strongest MFA first? Build a priority list and justify it.
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="callout good">
+      <strong>Prompt 3:</strong> Define one policy change you could implement this month that meaningfully reduces phishing risk.
+    </div>
+
+    <div style="height: 10px;"></div>
+
+    <div class="codebox">
+      Simple assessment idea:
+      Ask learners to classify MFA methods into:
+      - Easily phishable
+      - Less phishable
+      - Phishing-resistant
+      Then explain one tradeoff for each.
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleDetails() {
+    const el = document.getElementById("details");
+    el.style.display = (el.style.display === "none") ? "block" : "none";
+  }
+</script>
+
+{% endblock %}

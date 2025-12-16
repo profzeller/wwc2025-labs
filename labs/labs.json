@@ -10,6 +10,17 @@
         { "container_port": 5000, "host_port": 8081 }
       ],
       "launch_url": "http://localhost:8081/"
+    },
+    {
+      "id": "lab2",
+      "title": "Lab 2 — Account Security Clinic",
+      "description": "A guided web clinic covering passwords, MFA, recovery, and phishing-resistant authentication—built for classroom discussion and practical decision-making.",
+      "container_name": "wwc2025-lab2",
+      "image": "wwc2025/lab2:latest",
+      "ports": [
+        { "container_port": 5000, "host_port": 8082 }
+      ],
+      "launch_url": "http://localhost:8082/"
     }
   ]
 }

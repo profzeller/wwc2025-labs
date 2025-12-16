@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>{{ title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --panel:#121826;
+      --text:#e6edf3;
+      --muted:#9aa4b2;
+      --border:#263042;
+      --accent:#8ab4f8;
+      --success:#4ade80;
+      --danger:#f87171;
+      --warn:#fbbf24;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{padding:18px 22px;border-bottom:1px solid var(--border);background:rgba(11,15,20,.9)}
+    header .row{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;justify-content:space-between}
+    h1{margin:0;font-size:20px}
+    .sub{margin:6px 0 0 0;color:var(--muted);line-height:1.4;max-width:980px}
+    main{padding:22px;max-width:1100px;margin:0 auto}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .btn{background:var(--panel);color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;cursor:pointer;text-decoration:none;display:inline-block;line-height:1}
+    .btn:hover{border-color:var(--accent)}
+    .btn-primary{border-color:var(--accent);color:var(--accent)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px}
+    .card h2{margin:0;font-size:17px}
+    .card p{margin:0;color:var(--muted);line-height:1.4}
+    .pill{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--border);background:rgba(154,164,178,.08);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:12px;width:max-content}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:auto}
+    .panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .two{display:grid;grid-template-columns:1fr;gap:14px}
+    @media (min-width: 920px){ .two{grid-template-columns:1fr 1fr;} }
+    label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+    input[type="number"], select{
+      width:100%;max-width:320px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);
+      background:rgba(154,164,178,.08);color:var(--text)
+    }
+    input[type="checkbox"]{transform:translateY(1px)}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .codebox{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background:rgba(154,164,178,.08);border:1px solid var(--border);border-radius:12px;padding:14px;overflow:auto;
+    }
+    .callout{border:1px solid var(--border);border-radius:14px;padding:14px;background:rgba(154,164,178,.07)}
+    .callout.good{border-color:rgba(74,222,128,.45)}
+    .callout.warn{border-color:rgba(251,191,36,.45)}
+    .callout.bad{border-color:rgba(248,113,113,.45)}
+    footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="row">
+    <div>
+      <h1>{{ title }}</h1>
+      {% block subtitle %}
+      <p class="sub">A guided clinic for practical account security decisions (passwords, MFA, recovery, phishing-resistant options).</p>
+      {% endblock %}
+    </div>
+    <div class="row">
+      <a class="btn" href="/">Home</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+
+  <footer>
+    Instructor tip: run this as a discussion lab. Ask “What would you do in a school environment this week?” vs “What’s ideal in an enterprise?”
+  </footer>
+</main>
+
+</body>
+</html>
