@@ -39,6 +39,15 @@ services:
     restart: "no"
 
   # Build-only service (do not `up` this service).
+  # Build it with: docker compose --profile labs build lab3
+  lab4:
+    build:
+      context: ./labs/lab4-ir-walkthrough
+    image: wwc2025/lab4:latest
+    profiles: ["labs"]
+    restart: "no"
+
+  # Build-only service (do not `up` this service).
   # Build it with: docker compose --profile labs build lab5
   lab5:
     build:
