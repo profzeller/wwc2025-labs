@@ -11,6 +11,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
 
+  # Build-only service (do not `up` this service).
+  # Build it with: docker compose --profile labs build lab1
   lab1:
     build:
       context: ./labs/lab1-cia-matcher
@@ -18,6 +20,8 @@ services:
     profiles: ["labs"]
     restart: "no"
 
+  # Build-only service (do not `up` this service).
+  # Build it with: docker compose --profile labs build lab2
   lab2:
     build:
       context: ./labs/lab2-account-security-clinic
@@ -25,6 +29,8 @@ services:
     profiles: ["labs"]
     restart: "no"
 
+  # Build-only service (do not `up` this service).
+  # Build it with: docker compose --profile labs build lab3
   lab3:
     build:
       context: ./labs/lab3-triage-board
@@ -32,9 +38,11 @@ services:
     profiles: ["labs"]
     restart: "no"
 
-  lab4:
+  # Build-only service (do not `up` this service).
+  # Build it with: docker compose --profile labs build lab5
+  lab5:
     build:
-      context: ./labs/lab4-ir-walkthrough
-    image: wwc2025/lab4:latest
+      context: ./labs/lab5-social-engineering
+    image: wwc2025/lab5:latest
     profiles: ["labs"]
     restart: "no"

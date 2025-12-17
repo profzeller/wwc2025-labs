@@ -1,0 +1,140 @@
+{
+  "title": "Lab 5 — Social Engineering Analysis: Recognize, Respond, Teach",
+  "tagline": "Analyze synthetic scenarios to recognize patterns, explain why they work, and practice safe responses—without real brands or live interaction.",
+  "result_framing": "This is not a quiz. Use the model comparison to reflect on patterns and reasoning. Different answers can still be defensible if your safety response is sound and your explanation is clear.",
+  "technique_options": ["Phishing", "Pretexting", "Vishing", "Smishing"],
+  "lever_options": ["Urgency", "Authority", "Fear", "Helpfulness"],
+  "attacker_goal_options": [
+    "Click a link / open a page",
+    "Share information (details, codes, or sensitive context)",
+    "Approve an action (transfer, access, change)",
+    "Create a new communication channel (move to another number/app)",
+    "Lower defenses (keep the target engaged and compliant)"
+  ],
+  "shortcut_options": [
+    "Time pressure reduces careful reading",
+    "Authority bias (it sounds official)",
+    "Fear of consequences",
+    "Politeness / reluctance to challenge",
+    "Desire to be helpful",
+    "Ambiguity creates guessing and compliance",
+    "“Small first step” that escalates later",
+    "Binary choice traps (YES/NO) that bypass reflection"
+  ],
+  "response_options": [
+    "Do not engage; verify independently using known channels; report",
+    "Pause and consult policy or supervisor; document; report",
+    "End contact; start a new contact using a verified directory number; report",
+    "Do not click/reply; open the official app/site directly; report",
+    "Assume it may be a test or scam; treat it calmly; report without blame"
+  ],
+  "teaching_guardrail_options": [
+    "Use fictional organizations and neutral wording",
+    "Avoid realistic templates that could be reused",
+    "No credential entry, links, or live interaction",
+    "Focus on reporting and verification steps",
+    "Avoid victim-blaming language; emphasize situational pressure",
+    "Discuss multiple safe responses (not a single magic move)"
+  ],
+  "scenarios": [
+    {
+      "id": "SE01",
+      "channel": "Email",
+      "notes": "A message arrives at the start of a busy day. It requests immediate action and implies consequences.",
+      "artifact": "Subject: Required Action Today\n\nYour account is missing a required confirmation step. Please complete the update immediately to avoid restricted access.\n\nIf you have questions, reply to this message so we can assist.",
+      "focus": { "discussion_prompt": "What makes this feel urgent even without specifics?" },
+      "answers": {
+        "technique": "Phishing",
+        "lever": "Urgency",
+        "attacker_goal": "Click a link / open a page",
+        "shortcuts": [
+          "Time pressure reduces careful reading",
+          "Ambiguity creates guessing and compliance",
+          "“Small first step” that escalates later"
+        ],
+        "deconstruction": [
+          "A deadline without verifiable details pushes action before reflection.",
+          "Implied consequences increase compliance pressure.",
+          "A convenient next step (reply/click) moves control to the sender."
+        ],
+        "safe_response": "Do not click or reply. Verify independently using a known internal portal or published support channel. Report using the organization’s process.",
+        "teaching_note": "Keep language generic and brand-neutral. Teach the pattern: urgency + vague consequences + convenient next step. Practice “verify independently” as a default."
+      }
+    },
+    {
+      "id": "SE02",
+      "channel": "Phone Call Summary",
+      "notes": "A caller claims to be support and asks for confirmation due to 'suspicious activity.'",
+      "artifact": "Call summary:\nA caller says they are from support. They mention 'unusual access' and ask you to confirm recent sign-ins and provide a verification code to 'lock down the account.'",
+      "focus": { "discussion_prompt": "Why do verification codes feel safe to share when stressed?" },
+      "answers": {
+        "technique": "Vishing",
+        "lever": "Authority",
+        "attacker_goal": "Share information (details, codes, or sensitive context)",
+        "shortcuts": [
+          "Authority bias (it sounds official)",
+          "Politeness / reluctance to challenge",
+          "Fear of consequences",
+          "“Small first step” that escalates later"
+        ],
+        "deconstruction": [
+          "Borrowed authority lowers skepticism and speeds compliance.",
+          "A crisis frame makes risky actions feel protective.",
+          "A “small” data request (a code) can enable a larger compromise."
+        ],
+        "safe_response": "End the call politely. Initiate a new call using a verified directory number. Never share verification codes on inbound contact. Report the attempt.",
+        "teaching_note": "Use summaries rather than realistic role-play scripts. Reinforce: inbound contact is untrusted; verify via known channels."
+      }
+    },
+    {
+      "id": "SE03",
+      "channel": "Text Message",
+      "notes": "Short messages compress context and invite quick replies.",
+      "artifact": "Text message:\nUnusual activity detected. Reply YES to confirm this was you or NO to secure your account now.",
+      "focus": { "discussion_prompt": "What does the YES/NO choice prevent you from doing?" },
+      "answers": {
+        "technique": "Smishing",
+        "lever": "Fear",
+        "attacker_goal": "Create a new communication channel (move to another number/app)",
+        "shortcuts": [
+          "Binary choice traps (YES/NO) that bypass reflection",
+          "Fear of consequences",
+          "Time pressure reduces careful reading",
+          "Ambiguity creates guessing and compliance"
+        ],
+        "deconstruction": [
+          "Binary options reduce reflection and bypass verification.",
+          "Fear pushes action to avoid harm.",
+          "A reply can confirm the number is active and invite follow-on steps."
+        ],
+        "safe_response": "Do not reply. Check the account independently using a known app or official website. Report the message if needed.",
+        "teaching_note": "Keep examples generic and short. Emphasize that replying can escalate risk. Teach: pause, verify independently, report—without blame."
+      }
+    },
+    {
+      "id": "SE04",
+      "channel": "Email",
+      "notes": "This scenario exploits goodwill and social obligation rather than fear.",
+      "artifact": "Subject: Quick help before deadline\n\nI’m locked out of a shared workspace and need the files within the hour. Can you log in and download them for me? It would really save me.",
+      "focus": { "discussion_prompt": "Why does helping feel safe even when it violates policy?" },
+      "answers": {
+        "technique": "Pretexting",
+        "lever": "Helpfulness",
+        "attacker_goal": "Approve an action (transfer, access, change)",
+        "shortcuts": [
+          "Desire to be helpful",
+          "Politeness / reluctance to challenge",
+          "Time pressure reduces careful reading",
+          "“Small first step” that escalates later"
+        ],
+        "deconstruction": [
+          "The request frames policy-breaking as kindness, shifting identity to “helper.”",
+          "A deadline discourages verification and alternatives.",
+          "It asks for an action that transfers access or data without needing credentials."
+        ],
+        "safe_response": "Do not log in on someone else’s behalf. Offer safe alternatives (official reset/support steps) and report if suspicious.",
+        "teaching_note": "Emphasize that policies protect people. Teach students they can be helpful while refusing unsafe actions."
+      }
+    }
+  ]
+}

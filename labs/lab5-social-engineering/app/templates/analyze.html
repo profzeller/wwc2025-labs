@@ -1,0 +1,266 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="controls">
+  <button form="lab-form" type="submit" class="btn-primary">Submit</button>
+  <a class="btn" href="/">Reset</a>
+
+  {% if summary %}
+    <span class="pill">
+      Comparison view available below (open “Model comparison” on each scenario)
+    </span>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="section-title">What you’re practicing</div>
+  <p class="small" style="margin:0;">
+    This lab is <strong>analysis-only</strong>. You are not meant to “perform” anything or interact with real systems.
+    For each scenario:
+    <strong>(1)</strong> recognize the pattern (technique + lever),
+    <strong>(2)</strong> explain why it works (attacker goal + shortcuts),
+    <strong>(3)</strong> choose the safest response,
+    <strong>(4)</strong> describe how to teach it responsibly.
+  </p>
+
+  <div class="section-title">Safety guardrails</div>
+  <ul class="small" style="margin:0 0 0 18px;">
+    <li>All examples are synthetic and brand-neutral</li>
+    <li>No links, credential entry, or live interaction</li>
+    <li>Focus on reporting and verification, not blame</li>
+  </ul>
+
+  {% if summary and summary.framing %}
+    <div class="feedback">
+      <span class="badge neutral">Note</span>
+      {{ summary.framing }}
+    </div>
+  {% endif %}
+</div>
+
+<form id="lab-form" method="post" action="/submit">
+  <section class="grid" style="margin-top:14px;">
+    {% for s in scenarios %}
+      {% set sid = s.id %}
+      {% set prev = None %}
+      {% if results %}
+        {% for r in results %}
+          {% if r.id == sid %}
+            {% set prev = r %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      <div class="card">
+        <h2>{{ loop.index }}. Scenario {{ s.id }}</h2>
+        <p class="meta">Channel: <code>{{ s.channel }}</code></p>
+
+        <div class="artifact">{{ s.artifact }}</div>
+
+        {% if s.notes %}
+          <p class="small" style="margin:0 0 8px 0;">
+            <span class="badge neutral">Context</span>
+            {{ s.notes }}
+          </p>
+        {% endif %}
+
+        <div class="section-title">1) Recognize the pattern</div>
+        <div class="row cols-2">
+          <div class="field">
+            <label for="{{ sid }}__technique">Technique</label>
+            <select id="{{ sid }}__technique" name="{{ sid }}__technique" required>
+              <option value="" disabled {% if not prev %}selected{% endif %}>Select…</option>
+              {% for opt in technique_options %}
+                <option value="{{ opt }}"
+                  {% if prev and prev.picked.technique == opt %}selected{% endif %}>
+                  {{ opt }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="{{ sid }}__lever">Psychological lever</label>
+            <select id="{{ sid }}__lever" name="{{ sid }}__lever" required>
+              <option value="" disabled {% if not prev %}selected{% endif %}>Select…</option>
+              {% for opt in lever_options %}
+                <option value="{{ opt }}"
+                  {% if prev and prev.picked.lever == opt %}selected{% endif %}>
+                  {{ opt }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">2) Deconstruct why it works</div>
+        <div class="row cols-3">
+          <div class="field">
+            <label for="{{ sid }}__goal">What does the sender want the target to do?</label>
+            <select id="{{ sid }}__goal" name="{{ sid }}__goal" required>
+              <option value="" disabled {% if not prev %}selected{% endif %}>Select…</option>
+              {% for opt in attacker_goal_options %}
+                <option value="{{ opt }}"
+                  {% if prev and prev.picked.goal == opt %}selected{% endif %}>
+                  {{ opt }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Which decision shortcuts are being triggered? (choose any)</label>
+            <div class="checks">
+              {% for opt in shortcut_options %}
+                <label class="check">
+                  <input type="checkbox" name="{{ sid }}__shortcuts" value="{{ opt }}"
+                    {% if prev and opt in prev.picked.shortcuts %}checked{% endif %}>
+                  <span>{{ opt }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="{{ sid }}__response">Safest response</label>
+            <select id="{{ sid }}__response" name="{{ sid }}__response" required>
+              <option value="" disabled {% if not prev %}selected{% endif %}>Select…</option>
+              {% for opt in response_options %}
+                <option value="{{ opt }}"
+                  {% if prev and prev.picked.response == opt %}selected{% endif %}>
+                  {{ opt }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="section-title">3) Teach responsibly</div>
+        <div class="row cols-2">
+          <div class="field">
+            <label>Which guardrails should apply if you teach this pattern? (choose any)</label>
+            <div class="checks">
+              {% for opt in teaching_guardrail_options %}
+                <label class="check">
+                  <input type="checkbox" name="{{ sid }}__guardrails" value="{{ opt }}"
+                    {% if prev and opt in prev.picked.guardrails %}checked{% endif %}>
+                  <span>{{ opt }}</span>
+                </label>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Reflection prompt</label>
+            <p class="small" style="margin:0;">
+              In one sentence:
+              <em>Why might a careful person still comply here?</em><br/>
+              Then:
+              <em>Where is the safest interruption point?</em>
+            </p>
+            <details>
+              <summary>Optional discussion prompts</summary>
+              <ul class="small" style="margin:10px 0 0 18px;">
+                <li>What would “verify independently” look like in a real workplace?</li>
+                <li>What emotion is being pushed to the front (fear, urgency, obligation)?</li>
+                <li>How do you report this without shaming the recipient?</li>
+              </ul>
+            </details>
+          </div>
+        </div>
+
+        {% if prev %}
+          <div class="feedback">
+            <span class="badge neutral">Submitted</span>
+            Your selections have been recorded. Use the comparison below to reflect on patterns.
+
+            <details>
+              <summary>Model comparison (open after you’ve answered)</summary>
+              <div class="small" style="margin-top:10px;">
+
+                <div style="margin-bottom:10px;">
+                  <span class="badge {% if prev.ok.technique %}ok{% else %}bad{% endif %}">
+                    Technique {% if prev.ok.technique %}matches model{% else %}differs{% endif %}
+                  </span>
+                  <span class="badge {% if prev.ok.lever %}ok{% else %}bad{% endif %}">
+                    Lever {% if prev.ok.lever %}matches model{% else %}differs{% endif %}
+                  </span>
+                  <span class="badge {% if prev.ok.goal %}ok{% else %}bad{% endif %}">
+                    Goal {% if prev.ok.goal %}matches model{% else %}differs{% endif %}
+                  </span>
+                </div>
+
+                <div>
+                  <strong>Model pattern labels:</strong><br/>
+                  Technique: <code>{{ prev.answers.technique }}</code><br/>
+                  Lever: <code>{{ prev.answers.lever }}</code><br/>
+                  Goal: <code>{{ prev.answers.attacker_goal }}</code>
+                </div>
+
+                {% if prev.answers.deconstruction %}
+                  <div style="margin-top:12px;">
+                    <strong>Why this works (model notes):</strong>
+                    <ul style="margin:8px 0 0 18px;">
+                      {% for bullet in prev.answers.deconstruction %}
+                        <li>{{ bullet }}</li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                {% endif %}
+
+                <div style="margin-top:12px;">
+                  <strong>Decision shortcuts (your overlap with model):</strong>
+                  {% if prev.overlap.shortcuts and prev.overlap.shortcuts|length > 0 %}
+                    {% for o in prev.overlap.shortcuts %}
+                      <code>{{ o }}</code>{% if not loop.last %} {% endif %}
+                    {% endfor %}
+                  {% else %}
+                    <code>(no overlap)</code>
+                  {% endif %}
+                  <div class="small" style="margin-top:6px;">
+                    This is not graded. Different people notice different shortcuts first.
+                  </div>
+                </div>
+
+                <div style="margin-top:12px;">
+                  <strong>Teaching guardrails (your overlap with model):</strong>
+                  {% if prev.overlap.guardrails and prev.overlap.guardrails|length > 0 %}
+                    {% for o in prev.overlap.guardrails %}
+                      <code>{{ o }}</code>{% if not loop.last %} {% endif %}
+                    {% endfor %}
+                  {% else %}
+                    <code>(no overlap)</code>
+                  {% endif %}
+                </div>
+
+                <div style="margin-top:12px;">
+                  <strong>Safe response model:</strong>
+                  <div style="margin-top:6px;">{{ prev.answers.safe_response }}</div>
+                </div>
+
+                <div style="margin-top:12px;">
+                  <strong>How to teach safely (model guidance):</strong>
+                  <div style="margin-top:6px;">{{ prev.answers.teaching_note }}</div>
+                </div>
+
+              </div>
+            </details>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+
+  <div class="controls" style="margin-top:16px;">
+    <button type="submit" class="btn-primary">Submit</button>
+    <a class="btn" href="/">Reset</a>
+  </div>
+</form>
+
+<footer>
+  This activity is designed for classroom discussion. The goal is to recognize patterns, explain why they work,
+  and choose safe responses—without recreating real scams.
+</footer>
+
+{% endblock %}

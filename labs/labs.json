@@ -43,6 +43,17 @@
         { "container_port": 5000, "host_port": 8084 }
       ],
       "launch_url": "http://localhost:8084/"
+    },
+    {
+      "id": "lab5",
+      "title": "Lab 5 — Social Engineering Analysis: Recognize, Respond, Teach",
+      "description": "Identify social engineering techniques and psychological levers, then deconstruct why they work. Emphasis on safe responses, reporting, and classroom-responsible teaching. Synthetic artifacts only.",
+      "container_name": "wwc2025-lab5",
+      "image": "wwc2025/lab5:latest",
+      "ports": [
+        { "container_port": 5000, "host_port": 8085 }
+      ],
+      "launch_url": "http://localhost:8085/"
     }
   ]
 }
