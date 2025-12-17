@@ -1,0 +1,125 @@
+{
+  "title": "Lab 4 — Incident Response: Evidence Preservation Challenge",
+  "rules": {
+    "max_first_actions": 3
+  },
+  "report": {
+    "user": "Staff Member",
+    "time": "09:14",
+    "channel": "Help Desk Ticket",
+    "summary": "User reports multiple unexpected MFA prompts. The user says they did not initiate any sign-in attempts and is concerned someone is trying to access the account."
+  },
+  "instructor_guidance": [
+    "This lab is about ordering: preserve evidence before containment changes state.",
+    "Encourage teams to write a one-sentence justification before each action.",
+    "Most teams will want to reset passwords immediately—pause and ask what evidence that might remove or complicate.",
+    "A strong first-three sequence usually includes: preserve identity logs, collect user statement, and snapshot active sessions/device info before revoking everything.",
+    "Debrief: what evidence was lost, and how would that change your confidence about what happened?"
+  ],
+  "evidence": [
+    {
+      "id": "ev_login_history",
+      "title": "Recent Sign-in History",
+      "description": "A synthetic list of recent sign-ins (timestamps, device label, success/failure, MFA result). Useful for building the timeline."
+    },
+    {
+      "id": "ev_mfa_events",
+      "title": "MFA Prompt Events",
+      "description": "A synthetic record of MFA prompts sent, approved/denied, and method type (push vs number match)."
+    },
+    {
+      "id": "ev_active_sessions",
+      "title": "Active Sessions Snapshot",
+      "description": "A point-in-time snapshot showing active sessions and sign-in tokens currently valid."
+    },
+    {
+      "id": "ev_user_statement",
+      "title": "User Statement",
+      "description": "What the user saw, when they saw it, what they clicked, and whether they approved any prompts."
+    },
+    {
+      "id": "ev_admin_actions",
+      "title": "Admin Audit Log",
+      "description": "A synthetic audit log of recent account changes (password reset, MFA changes, group membership, forwarding rules)."
+    },
+    {
+      "id": "ev_mail_rules",
+      "title": "Mailbox Rules Snapshot",
+      "description": "A snapshot of forwarding rules and inbox rules that may indicate compromise persistence."
+    }
+  ],
+  "actions": [
+    {
+      "id": "a01_preserve_identity_logs",
+      "title": "Export sign-in history and MFA event logs",
+      "phase": "Detection",
+      "description": "Preserve identity logs for the last 72 hours (sign-ins, MFA challenges, failures/successes).",
+      "preserves": ["ev_login_history", "ev_mfa_events"],
+      "destroys": [],
+      "risks": ["Low risk; evidence-preserving action"]
+    },
+    {
+      "id": "a02_collect_user_statement",
+      "title": "Interview user and document what happened",
+      "phase": "Detection",
+      "description": "Ask whether any prompts were approved, when prompts started, and what devices were in use.",
+      "preserves": ["ev_user_statement"],
+      "destroys": [],
+      "risks": ["Low risk; improves timeline accuracy"]
+    },
+    {
+      "id": "a03_snapshot_sessions",
+      "title": "Snapshot active sessions before changing credentials",
+      "phase": "Detection",
+      "description": "Record active sessions/tokens, device list, and recent session creation times.",
+      "preserves": ["ev_active_sessions"],
+      "destroys": [],
+      "risks": ["Low risk; helps confirm ongoing access"]
+    },
+    {
+      "id": "a06_check_admin_audit",
+      "title": "Review admin audit log for account changes",
+      "phase": "Detection",
+      "description": "Look for password changes, MFA method changes, mailbox forwarding rules, or privilege changes.",
+      "preserves": ["ev_admin_actions"],
+      "destroys": [],
+      "risks": ["Low risk; confirms compromise indicators"]
+    },
+    {
+      "id": "a07_capture_mail_rules",
+      "title": "Capture mailbox forwarding and inbox rules",
+      "phase": "Detection",
+      "description": "Snapshot mailbox rules to check for persistence (forwarding, auto-delete, move rules).",
+      "preserves": ["ev_mail_rules"],
+      "destroys": [],
+      "risks": ["Low risk; high value for account compromise cases"]
+    },
+    {
+      "id": "a04_force_password_reset",
+      "title": "Force password reset immediately",
+      "phase": "Containment",
+      "description": "Reset password and require re-authentication across devices.",
+      "preserves": [],
+      "destroys": ["ev_active_sessions"],
+      "risks": ["High: can invalidate sessions before you capture them"]
+    },
+    {
+      "id": "a05_revoke_sessions",
+      "title": "Revoke all active sessions and tokens",
+      "phase": "Containment",
+      "description": "Revoke sessions/tokens to immediately stop any ongoing attacker access.",
+      "preserves": [],
+      "destroys": ["ev_active_sessions"],
+      "risks": ["High: can destroy session artifacts if not captured first"]
+    },
+    {
+      "id": "a08_disable_account",
+      "title": "Disable account temporarily",
+      "phase": "Containment",
+      "description": "Disable the account to stop access while the team investigates.",
+      "preserves": [],
+      "destroys": ["ev_active_sessions"],
+      "risks": ["High: stops access but can remove live-session context if not captured first"]
+    }
+  ]
+}

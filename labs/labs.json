@@ -32,6 +32,17 @@
         { "container_port": 5000, "host_port": 8083 }
       ],
       "launch_url": "http://localhost:8083/"
+    },
+    {
+      "id": "lab4",
+      "title": "Lab 4 — Incident Response: Evidence Preservation Challenge",
+      "description": "Practice structured incident response by choosing early actions carefully, preserving evidence, and documenting decisions before containment.",
+      "container_name": "wwc2025-lab4",
+      "image": "wwc2025/lab4:latest",
+      "ports": [
+        { "container_port": 5000, "host_port": 8084 }
+      ],
+      "launch_url": "http://localhost:8084/"
     }
   ]
 }

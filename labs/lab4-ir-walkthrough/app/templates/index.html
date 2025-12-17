@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="panel">
+  <div class="row">
+    <span class="pill">Estimated time: 20–30 minutes</span>
+    <span class="pill">Format: teams of 3</span>
+    <span class="pill">Theme: evidence before containment</span>
+  </div>
+
+  <div class="stepper" style="margin-top:12px;">
+    <div class="step active" id="stepRoles"><span class="step-num">1</span> Roles</div>
+    <div class="step" id="stepActions"><span class="step-num">2</span> First Actions</div>
+    <div class="step" id="stepOutcome"><span class="step-num">3</span> Outcome</div>
+    <div class="step" id="stepRecord"><span class="step-num">4</span> Incident Record</div>
+    <div class="step" id="stepEscalate"><span class="step-num">5</span> Escalate?</div>
+  </div>
+
+  <h2 class="h2">Incident Report</h2>
+  <div class="codebox">
+    <strong>Reporter:</strong> {{ incident.report.user }}<br/>
+    <strong>Report Time:</strong> {{ incident.report.time }}<br/>
+    <strong>Channel:</strong> {{ incident.report.channel }}<br/><br/>
+    {{ incident.report.summary }}
+  </div>
+
+  <div class="callout callout-warn" style="margin-top:12px;">
+    <strong>How this lab works:</strong>
+    You get <strong>{{ incident.rules.max_first_actions }}</strong> “first actions” tokens.
+    Before taking any action, use <strong>Preview</strong> to see what evidence it preserves or risks losing.
+  </div>
+
+  <div class="callout" style="margin-top:10px;">
+    <strong>Do not treat this like a quiz.</strong>
+    The goal is to justify ordering decisions and show why documentation matters.
+  </div>
+</section>
+
+<section class="layout">
+  <div class="left">
+
+    <div class="panel">
+      <div class="row row-space">
+        <h2 class="h2" style="margin:0;">Step 1 — Assign Roles</h2>
+        <button class="btn btn-danger" type="button" onclick="lab4Reset()">Reset Lab</button>
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        In your group, assign these roles (no need to type names). Then proceed to Step 2.
+      </div>
+
+      <div class="role-grid" style="margin-top:12px;">
+        <div class="card">
+          <div class="card-title">Technical Responder</div>
+          <div class="muted">Investigates and performs approved actions.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Decision Maker</div>
+          <div class="muted">Authorizes containment and recovery actions.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Documentation Lead</div>
+          <div class="muted">Captures timeline, actions, and current status.</div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:12px;">
+        <button class="btn btn-secondary" type="button" onclick="lab4GoTo('actions')">Proceed to Step 2</button>
+        <span class="muted">Tip: pick a Documentation Lead before anyone clicks “Take action.”</span>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;" id="actionsPanel">
+      <div class="row row-space">
+        <h2 class="h2" style="margin:0;">Step 2 — Choose Your First Actions</h2>
+        <div class="tokens">
+          <span class="pill">Tokens left: <strong id="tokensLeft">—</strong></span>
+          <span class="pill">Actions taken: <strong id="actionsTaken">—</strong></span>
+        </div>
+      </div>
+
+      <div class="muted" style="margin-top:8px;">
+        Choose your first <strong>{{ incident.rules.max_first_actions }}</strong> actions (your “first 15 minutes”).
+        Use <strong>Preview</strong> first so your team understands evidence impact.
+      </div>
+
+      <div class="legend" style="margin-top:10px;">
+        <span class="badge badge-preserve">Preserves evidence</span>
+        <span class="badge badge-destroy">Can lose evidence</span>
+        <span class="badge badge-risk">Operational risk / tradeoff</span>
+      </div>
+
+      <div class="action-list" id="actionList"></div>
+
+      {% if instructor %}
+      <details style="margin-top:12px;">
+        <summary style="cursor:pointer; font-weight:650;">Instructor Guidance</summary>
+        <div class="callout callout-good" style="margin-top:10px;">
+          <strong>Facilitation notes:</strong>
+          <div class="small" style="margin-top:6px;">
+            {% for line in incident.instructor_guidance %}
+              • {{ line }}<br/>
+            {% endfor %}
+          </div>
+        </div>
+      </details>
+      {% endif %}
+    </div>
+
+  </div>
+
+  <div class="right">
+
+    <div class="panel">
+      <div class="row row-space">
+        <h2 class="h2" style="margin:0;">Step 3 — Evidence Board</h2>
+        <span class="pill">Outcome updates as you take actions</span>
+      </div>
+
+      <div class="muted" style="margin-top:8px;">
+        Evidence starts as <strong>Available</strong>. Actions can mark evidence as <strong>Preserved</strong> or <strong>Lost</strong>.
+      </div>
+
+      <div class="legend" style="margin-top:10px;">
+        <span class="state state-available">Available</span>
+        <span class="state state-preserved">Preserved</span>
+        <span class="state state-lost">Lost</span>
+      </div>
+
+      <div class="evidence-list" id="evidenceList" style="margin-top:12px;"></div>
+
+      <div class="summary-grid" style="margin-top:12px;">
+        <div class="summary-card">
+          <div class="summary-num" id="countPreserved">0</div>
+          <div class="muted">Preserved</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="countLost">0</div>
+          <div class="muted">Lost</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="countChosen">0</div>
+          <div class="muted">Actions Taken</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="countEscalate">0</div>
+          <div class="muted">Escalate</div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:12px;">
+        <strong>Quick check:</strong> If evidence is “Lost,” how does that affect your confidence about what happened?
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;" id="recordPanel">
+      <div class="row row-space">
+        <h2 class="h2" style="margin:0;">Step 4 — Incident Record</h2>
+        <button class="btn btn-secondary" type="button" onclick="lab4SaveNotes()">Save Notes</button>
+      </div>
+
+      <label>What happened (best current understanding)?</label>
+      <textarea id="irWhat" placeholder="Write a 2–4 sentence summary. What is confirmed vs suspected?"></textarea>
+
+      <label>When did it occur (timeline so far)?</label>
+      <textarea id="irWhen" placeholder="List key timestamps and the order of events."></textarea>
+
+      <label>Actions taken (first 15 minutes)</label>
+      <textarea id="irActions" placeholder="This will fill automatically as actions are taken. Add details and reasons."></textarea>
+
+      <label>Current status</label>
+      <textarea id="irStatus" placeholder="Open / contained / monitoring / awaiting more evidence, etc."></textarea>
+
+      <div class="row" style="margin-top:12px;">
+        <button class="btn" type="button" onclick="lab4FillTemplate()">Fill Template</button>
+        <span class="muted">Use “Fill Template” if your group needs a starting point.</span>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;" id="escalatePanel">
+      <h2 class="h2" style="margin-top:0;">Step 5 — Decision: Escalate?</h2>
+      <div class="muted">Choose a decision and justify it using the evidence you preserved (or lost).</div>
+
+      <div class="radio-group" style="margin-top:10px;">
+        <label class="radio">
+          <input type="radio" name="escalate" value="no" onchange="lab4SetEscalate('no')">
+          No — handle as routine support
+        </label>
+        <label class="radio">
+          <input type="radio" name="escalate" value="not_yet" onchange="lab4SetEscalate('not_yet')">
+          Not yet — need more evidence first
+        </label>
+        <label class="radio">
+          <input type="radio" name="escalate" value="yes" onchange="lab4SetEscalate('yes')">
+          Yes — treat as likely compromise / incident
+        </label>
+      </div>
+
+      <label style="margin-top:12px;">Justification</label>
+      <textarea id="escalateWhy" placeholder="Why did you choose this? What evidence supports it?"></textarea>
+    </div>
+
+  </div>
+</section>
+
+<!-- Preview / Confirm Modal -->
+<div class="modal-backdrop" id="modalBackdrop" style="display:none;">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Action Preview</div>
+      <button class="modal-x" type="button" onclick="closeModal()">×</button>
+    </div>
+
+    <div class="modal-body">
+      <div class="muted" id="modalDesc"></div>
+
+      <div class="modal-grid" style="margin-top:12px;">
+        <div class="modal-box">
+          <div class="modal-box-title">Will preserve</div>
+          <div id="modalPreserve" class="modal-list muted"></div>
+        </div>
+        <div class="modal-box">
+          <div class="modal-box-title">May lose</div>
+          <div id="modalLose" class="modal-list muted"></div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:12px;" id="modalRiskBox">
+        <strong>Tradeoffs:</strong>
+        <div class="small" id="modalRisks" style="margin-top:6px;"></div>
+      </div>
+
+      <div class="callout callout-warn" style="margin-top:12px;">
+        <strong>Before you take this action:</strong> Write a one-sentence justification in your incident record or notes.
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" type="button" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-secondary" type="button" id="modalTakeBtn" onclick="confirmTakeAction()">Take action</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" style="display:none;"></div>
+
+<!-- Lab data is provided as JSON for app.js to read AFTER DOM loads -->
+<script id="lab4Data" type="application/json">
+{{ {"instructor": instructor, "incident": incident} | tojson }}
+</script>
+
+{% endblock %}

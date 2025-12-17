@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>{{ incident.title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+
+  <!-- Defer ensures JS runs after the DOM is parsed -->
+  <script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="title">{{ incident.title }}</div>
+      <div class="subtitle">
+        Choose your first actions carefully. Some containment steps can remove evidence you need to build a timeline.
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn" href="/">Reset View</a>
+      {% if instructor %}
+        <span class="pill pill-warn">Instructor View</span>
+      {% else %}
+        <a class="btn btn-secondary" href="/?instructor=1">Instructor View</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Tip: Document before action. If you contain first, you may lose “live” evidence that explains what happened.
+  </footer>
+</body>
+</html>
