@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>{{ title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+  <!-- Use url_for so the path is always correct -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <div class="title">{{ title }}</div>
+      <div class="subtitle">
+        Events → Alerts → Triage → Escalation. Your job is not to react to everything; your job is to decide what matters.
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="btn" href="/">Reset View</a>
+      {% if instructor %}
+      <span class="pill pill-warn">Instructor View</span>
+      {% else %}
+      <a class="btn btn-secondary" href="/?instructor=1">Instructor View</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    Tip: Most alerts are closed during triage. Escalation is a deliberate choice that has cost.
+  </footer>
+
+  <!-- Use url_for so the path is always correct -->
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

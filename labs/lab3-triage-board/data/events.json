@@ -1,0 +1,281 @@
+{
+  "title": "Lab 3 — Threat Detection Workflow: Signal vs Noise",
+  "scenario": {
+    "overview": "You are part of a small security team monitoring a basic environment. The system generates many events. Your job is to decide which ones are noise, which ones are signal, which require more context, and which warrant escalation.",
+    "environment": "Small organization with staff accounts, shared devices, and a handful of critical systems",
+    "team": "Tier 1 triage with the ability to escalate to Tier 2 / incident response",
+    "guardrails": "Synthetic data only. No real IPs/domains/brands. Focus on reasoning, not gotchas."
+  },
+  "events": [
+    {
+      "id": "e01",
+      "timestamp": "08:12",
+      "category": "Authentication",
+      "source": "Identity Service",
+      "type": "Login",
+      "summary": "Successful login for staff user from a new device",
+      "details": "A staff account logged in successfully. The device has not been seen for this user in the last 30 days. MFA was completed.",
+      "prompts": [
+        "Is this user traveling or using a replacement device?",
+        "Was the login time normal for this user?",
+        "Was MFA number-matching or a basic approve prompt?"
+      ],
+      "instructor_notes": [
+        "Often closed with context: user confirmation + normal patterns.",
+        "If paired with MFA push spam reports or impossible travel, escalate."
+      ]
+    },
+    {
+      "id": "e02",
+      "timestamp": "08:19",
+      "category": "Endpoint",
+      "source": "Workstation Telemetry",
+      "type": "Process Start",
+      "summary": "A scripting engine launched by a document viewer",
+      "details": "A document viewer launched a scripting engine process shortly after a file was opened from the downloads folder.",
+      "prompts": [
+        "Is this common for this system or user?",
+        "What was the file origin (email download, internal share, removable media)?",
+        "Do you have command-line arguments or parent/child process chain?"
+      ],
+      "instructor_notes": [
+        "This is commonly 'signal' and often needs context to confirm legitimacy.",
+        "Escalate if the chain suggests phishing or if similar activity occurs across multiple endpoints."
+      ]
+    },
+    {
+      "id": "e03",
+      "timestamp": "08:27",
+      "category": "Malware / AV",
+      "source": "Security Agent",
+      "type": "Test Alert",
+      "summary": "Antivirus test alert detected",
+      "details": "A known test signature was detected and blocked on a workstation. The alert indicates a benign test pattern.",
+      "prompts": [
+        "Was a training exercise scheduled?",
+        "Is the detection explicitly labeled as a test signature?",
+        "Is there any evidence of follow-on activity?"
+      ],
+      "instructor_notes": [
+        "Typically noise if clearly labeled as a test and no follow-on behaviors exist.",
+        "Use it to teach that not every alert is an incident."
+      ]
+    },
+    {
+      "id": "e04",
+      "timestamp": "08:41",
+      "category": "Authentication",
+      "source": "Identity Service",
+      "type": "Failed Logins",
+      "summary": "Multiple failed login attempts followed by a success",
+      "details": "A user account had several failed logins, then a successful login within a short time window.",
+      "prompts": [
+        "Were the failed attempts from the same location/device as the success?",
+        "Is the user known for password mistypes?",
+        "Did MFA occur for the successful login?"
+      ],
+      "instructor_notes": [
+        "Could be noise (user mistyping) or signal (password guessing) depending on origin correlation.",
+        "If failures originate broadly or the success is from a new device/location, escalate."
+      ]
+    },
+    {
+      "id": "e05",
+      "timestamp": "09:05",
+      "category": "Network",
+      "source": "Gateway Logs",
+      "type": "Connection",
+      "summary": "Workstation made multiple outbound connections to uncommon ports",
+      "details": "A workstation initiated repeated outbound connections to uncommon destination ports over a short period.",
+      "prompts": [
+        "What process initiated the connections?",
+        "Is the destination internal or external?",
+        "Is this machine used for specialized tasks (IT admin, lab tooling)?"
+      ],
+      "instructor_notes": [
+        "Usually 'needs more context'—ports alone are rarely decisive.",
+        "Escalate if tied to suspicious process lineage or data transfer patterns."
+      ]
+    },
+    {
+      "id": "e06",
+      "timestamp": "09:18",
+      "category": "Access",
+      "source": "File Service",
+      "type": "File Read",
+      "summary": "Large number of file reads from a shared folder",
+      "details": "A user account accessed many files in a shared directory in a short period.",
+      "prompts": [
+        "Is this a known batch job or backup process?",
+        "What file types were accessed?",
+        "Was there any corresponding file modification or encryption behavior?"
+      ],
+      "instructor_notes": [
+        "Volume alone is not an incident; context matters (job role, scheduled tasks).",
+        "Escalate if paired with unusual process execution or suspicious timing."
+      ]
+    },
+    {
+      "id": "e07",
+      "timestamp": "10:02",
+      "category": "Authentication",
+      "source": "Help Desk Report",
+      "type": "User Report",
+      "summary": "User reports unexpected MFA prompts",
+      "details": "A user reported receiving multiple MFA prompts that they did not initiate.",
+      "prompts": [
+        "Did the user deny prompts or approve any?",
+        "Are there recent password reset attempts?",
+        "Are there concurrent logins from new devices/locations?"
+      ],
+      "instructor_notes": [
+        "This is often high-signal because it represents adversary activity or account takeover attempts.",
+        "Escalate if repeated prompts, new-device logins, or any approved prompt occurred."
+      ]
+    },
+    {
+      "id": "e08",
+      "timestamp": "10:24",
+      "category": "Endpoint",
+      "source": "Workstation Telemetry",
+      "type": "Scheduled Task",
+      "summary": "A scheduled task ran at an unusual hour for this device",
+      "details": "A scheduled task executed outside the normal business hours profile for this device. The task name is generic.",
+      "prompts": [
+        "Is this task new or historically present?",
+        "What program/script is executed by the task?",
+        "Is the device typically offline at that hour?"
+      ],
+      "instructor_notes": [
+        "Generic scheduled task names are a common persistence technique—often 'needs more context' or 'signal'.",
+        "Escalate if the task is newly created or runs suspicious binaries."
+      ]
+    },
+    {
+      "id": "e09",
+      "timestamp": "11:10",
+      "category": "Email",
+      "source": "Mail Security",
+      "type": "Message",
+      "summary": "Inbound email with a document attachment flagged as suspicious",
+      "details": "A user received an email with a document attachment. The message was flagged as suspicious but delivered to quarantine for review.",
+      "prompts": [
+        "Was the attachment opened? If so, on which device?",
+        "Did any endpoint events occur shortly after delivery?",
+        "Is the sender known or expected?"
+      ],
+      "instructor_notes": [
+        "Often 'needs more context'—delivery to quarantine reduces urgency.",
+        "Escalate if correlated with process execution or credential prompts."
+      ]
+    },
+    {
+      "id": "e10",
+      "timestamp": "11:34",
+      "category": "Authentication",
+      "source": "Identity Service",
+      "type": "Privilege Change",
+      "summary": "A staff account was added to a privileged group",
+      "details": "A staff account was added to a privileged group. The change was performed by an admin account.",
+      "prompts": [
+        "Was this change approved and documented?",
+        "Was the admin account activity expected at this time?",
+        "Is there a ticket or change record?"
+      ],
+      "instructor_notes": [
+        "Privilege changes are high-impact; usually signal.",
+        "Escalate if there is no change record or if admin account context is suspicious."
+      ]
+    },
+    {
+      "id": "e11",
+      "timestamp": "12:05",
+      "category": "Network",
+      "source": "Gateway Logs",
+      "type": "DNS",
+      "summary": "A device performed a burst of DNS lookups",
+      "details": "A device performed a burst of DNS queries over a short time window. Query volume is unusual for this device.",
+      "prompts": [
+        "What process caused the queries?",
+        "Are the domains newly seen for the organization?",
+        "Is this a software update or browser session?"
+      ],
+      "instructor_notes": [
+        "Often noise (updates, browsing) unless paired with other suspicious behaviors.",
+        "Treat as 'needs more context' unless correlated."
+      ]
+    },
+    {
+      "id": "e12",
+      "timestamp": "13:22",
+      "category": "Access",
+      "source": "File Service",
+      "type": "File Write",
+      "summary": "User wrote many files with unusual extensions",
+      "details": "A user account wrote many files with unusual extensions to a shared directory over a short time window.",
+      "prompts": [
+        "Is this normal output for the user’s role?",
+        "Are file names consistent with encryption or automated renaming?",
+        "Are there endpoint alerts for the same device?"
+      ],
+      "instructor_notes": [
+        "Potentially high-signal if filenames suggest automated renaming or encryption behavior.",
+        "Escalate if paired with endpoint process anomalies or rapid changes across many files."
+      ]
+    },
+    {
+      "id": "e13",
+      "timestamp": "14:08",
+      "category": "Endpoint",
+      "source": "Workstation Telemetry",
+      "type": "Software Install",
+      "summary": "New software installed on a shared device",
+      "details": "New software was installed on a shared workstation. The installer executed with elevated privileges.",
+      "prompts": [
+        "Is this device managed and should installs be restricted?",
+        "Who performed the install and why?",
+        "Is the software from an approved source?"
+      ],
+      "instructor_notes": [
+        "Can be noise (approved install) or signal (unauthorized software) depending on governance.",
+        "Escalate if install is unapproved or coincides with suspicious admin activity."
+      ]
+    },
+    {
+      "id": "e14",
+      "timestamp": "15:11",
+      "category": "Authentication",
+      "source": "Identity Service",
+      "type": "Session",
+      "summary": "User created a new email forwarding rule",
+      "details": "A user account created a new mail forwarding rule shortly after a login from a new device.",
+      "prompts": [
+        "Did the user intend to configure forwarding?",
+        "Are there other mailbox rule changes (auto-delete, move-to-archive)?",
+        "Was MFA prompt spam reported?"
+      ],
+      "instructor_notes": [
+        "Mailbox rule changes after new-device login are often strong signal for compromise.",
+        "Escalate: this commonly requires containment and credential reset."
+      ]
+    },
+    {
+      "id": "e15",
+      "timestamp": "16:03",
+      "category": "Endpoint",
+      "source": "Workstation Telemetry",
+      "type": "Process Start",
+      "summary": "Remote access tool executed on an admin workstation",
+      "details": "A remote access tool executed on an admin workstation. The execution occurred outside the admin’s usual working pattern.",
+      "prompts": [
+        "Is this tool approved and normally used by admins?",
+        "What user initiated the process (interactive vs scheduled)?",
+        "Are there other correlated authentication anomalies?"
+      ],
+      "instructor_notes": [
+        "High-impact; often warrants escalation due to privilege and potential lateral movement.",
+        "Escalate if not tied to an approved maintenance window or known admin activity."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="panel">
+  <div class="panel-row">
+    <div class="pill">Estimated time: 15–25 minutes</div>
+    <div class="pill">Recommended format: pairs / small groups</div>
+    <div class="pill">Goal: justify decisions</div>
+  </div>
+
+  <h2 class="h2">Scenario</h2>
+  <p class="muted">
+    {{ scenario.overview }}
+  </p>
+
+  <div class="codebox">
+    Environment: {{ scenario.environment }}<br/>
+    Team: {{ scenario.team }}<br/>
+    Guardrails: {{ scenario.guardrails }}
+  </div>
+
+  <div class="callout callout-warn" style="margin-top:12px;">
+    <strong>Instructions:</strong>
+    For each event, choose <em>Noise</em>, <em>Signal</em>, or <em>Needs more context</em>.
+    If you mark Signal, decide whether to escalate and write what additional data you would want.
+    There is no single “perfect” answer—focus on reasoning.
+  </div>
+</section>
+
+<section class="layout">
+  <div class="left">
+    <div class="panel">
+      <div class="panel-row panel-row-space">
+        <h2 class="h2" style="margin:0;">Incoming Events</h2>
+        <button class="btn btn-danger" type="button" onclick="triageResetAll()">Reset All</button>
+      </div>
+      <div class="muted" style="margin-top:6px;">
+        Click an event to triage it. Your progress is stored locally in this browser.
+      </div>
+
+      <div class="event-list" id="eventList">
+        {% for e in events %}
+        <button class="event-item" type="button" onclick="openEvent('{{ e.id }}')"
+                id="eventBtn-{{ e.id }}"
+                data-event-id="{{ e.id }}">
+          <div class="event-top">
+            <span class="event-time">{{ e.timestamp }}</span>
+            <span class="tag">{{ e.category }}</span>
+          </div>
+          <div class="event-title">{{ e.summary }}</div>
+          <div class="event-meta muted">
+            Source: {{ e.source }} · Type: {{ e.type }}
+          </div>
+          <div class="event-badges" id="badges-{{ e.id }}"></div>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="panel" id="detailPanel">
+      <h2 class="h2" style="margin-top:0;">Event Details</h2>
+      <div class="muted">Select an event from the left to begin triage.</div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <h2 class="h2" style="margin-top:0;">Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-num" id="countNoise">0</div>
+          <div class="muted">Noise</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="countSignal">0</div>
+          <div class="muted">Signal</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="countContext">0</div>
+          <div class="muted">Needs context</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-num" id="countEscalate">0</div>
+          <div class="muted">Escalate</div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:12px;">
+        <strong>Reflection prompt:</strong>
+        Which two events were easiest to close? Which two were hardest? What single missing piece of context would have changed the most decisions?
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  window.LAB3 = {
+    instructor: {{ "true" if instructor else "false" }},
+    events: {{ events | tojson }}
+  };
+  triageInit();
+</script>
+
+{% endblock %}

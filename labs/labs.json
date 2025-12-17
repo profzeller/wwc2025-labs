@@ -21,6 +21,17 @@
         { "container_port": 5000, "host_port": 8082 }
       ],
       "launch_url": "http://localhost:8082/"
+    },
+    {
+      "id": "lab3",
+      "title": "Lab 3 — Threat Detection Workflow: Signal vs Noise",
+      "description": "Triage synthetic security events. Decide what’s noise, what’s signal, what needs more context, and what warrants escalation.",
+      "container_name": "wwc2025-lab3",
+      "image": "wwc2025/lab3:latest",
+      "ports": [
+        { "container_port": 5000, "host_port": 8083 }
+      ],
+      "launch_url": "http://localhost:8083/"
     }
   ]
 }
